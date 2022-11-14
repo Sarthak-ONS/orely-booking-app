@@ -1,3 +1,4 @@
+import 'package:bookingapp/appp_colors.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -51,74 +52,35 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(
                 height: 20,
               ),
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextButton.icon(
-                    onPressed: () {},
-                    icon: Image.asset(
-                      'Assets/Images/google.png',
-                      height: 40,
-                    ),
-                    style: ButtonStyle(
-                      // padding: MaterialStateProperty.all(
-                      //   const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
-                      // ),
-                      backgroundColor: MaterialStateProperty.all(
-                        Colors.white,
-                      ),
-                      shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                      ),
-                    ),
-                    label: const Text(
-                      'Login with Google',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 15,
-                      ),
-                    ),
+              Divider(
+                color: Colors.white.withOpacity(0.95),
+                thickness: 3,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              ElevatedButton.icon(
+                icon: Container(),
+                style: ElevatedButton.styleFrom(
+                  primary: AppColors.primayColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                ),
+                onPressed: () {},
+                label: const Text(
+                  'Get Started',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.all(8.0),
-              //   child: Align(
-              //     alignment: Alignment.bottomCenter,
-              //     child: ElevatedButton.icon(
-              //       icon: Image.asset(
-              //         'Assets/Images/google.png',
-              //         height: 40,
-              //       ),
-              //       onPressed: () {},
-              //       label: const Text(
-              //         'Login with Google',
-              //         style: TextStyle(
-              //           color: Colors.black,
-              //           fontWeight: FontWeight.w400,
-              //           fontSize: 15,
-              //         ),
-              //       ),
-              //       style: ButtonStyle(
-              //         padding: MaterialStateProperty.all(
-              //           const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
-              //         ),
-              //         backgroundColor: MaterialStateProperty.all(
-              //           Colors.white,
-              //         ),
-              //         shape: MaterialStateProperty.all(
-              //           RoundedRectangleBorder(
-              //             borderRadius: BorderRadius.circular(15.0),
-              //           ),
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              // )
+              const SizedBox(
+                height: 15.0,
+              )
             ],
           ),
         ),
