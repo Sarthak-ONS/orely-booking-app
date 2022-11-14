@@ -37,6 +37,7 @@ dependencies:
   firebase_core: 
   firebase_auth: ^3.4.0
   page_transition: ^2.0.9
+  intl:
   cloud_firestore: 
   google_sign_in:
 

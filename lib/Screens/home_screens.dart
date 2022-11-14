@@ -80,44 +80,49 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(
                       height: 5,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "${snapshot.data.docs[index]['name']}, ",
-                            ),
-                            Text(
-                                "Capacity: ${snapshot.data.docs[index]['capcity'].toString()}"),
-                          ],
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              '/roomDes',
-                              arguments: {
-                                "roomId": snapshot.data.docs[index]['room_id']
-                              },
-                            );
-                          },
-                          child: const Text('Book'),
-                          style: ButtonStyle(
-                            padding: MaterialStateProperty.all(
-                                const EdgeInsets.symmetric(
-                                    horizontal: 5, vertical: 2)),
-                            backgroundColor: MaterialStateProperty.all(
-                              AppColors.primayColor,
-                            ),
-                            shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5.0),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "${snapshot.data.docs[index]['name']}, ",
+                              ),
+                              Text(
+                                  "Capacity: ${snapshot.data.docs[index]['capcity'].toString()}"),
+                            ],
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/roomDes',
+                                arguments: {
+                                  "roomId": snapshot.data.docs[index]['room_id']
+                                },
+                              );
+                            },
+                            child: const Text('Book'),
+                            style: ButtonStyle(
+                              padding: MaterialStateProperty.all(
+                                  const EdgeInsets.symmetric(
+                                      horizontal: 5, vertical: 2)),
+                              backgroundColor: MaterialStateProperty.all(
+                                AppColors.primayColor,
+                              ),
+                              shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
                               ),
                             ),
-                          ),
-                        )
-                      ],
+                          )
+                        ],
+                      ),
                     )
                   ],
                 ),

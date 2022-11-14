@@ -5,6 +5,8 @@ import 'package:bookingapp/Screens/room_description_screen.dart';
 import 'package:bookingapp/Screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 
+import 'Screens/bookings_of_room_on_selected_date.dart';
+
 class RouteGenerator {
   Route<dynamic> generateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
@@ -18,9 +20,21 @@ class RouteGenerator {
         return getMaterialPageRoute(const HomeScreen());
       case '/roomDes':
         Map ar = routeSettings.arguments as Map;
-        return getMaterialPageRoute(RoomDescriptionScreen(
-          roomId: ar['roomId'],
-        ));
+        return getMaterialPageRoute(
+          RoomDescriptionScreen(
+            roomId: ar['roomId'],
+          ),
+        );
+      case '/selectedBookings':
+        Map ar = routeSettings.arguments as Map;
+        print(ar);
+        return getMaterialPageRoute(
+          BookingsOnSelectedDate(
+            roomId: ar['roomId'],
+            startingDate: ar['startingTime'],
+          ),
+        );
+
       default:
         return _errorRoute();
     }

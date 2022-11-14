@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../appp_colors.dart';
 
@@ -13,6 +14,12 @@ class RoomDescriptionScreen extends StatefulWidget {
 }
 
 class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
+  DateTime? selectedDateTime;
+
+  TimeOfDay? startingTime;
+
+  TimeOfDay? endingTime;
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -43,7 +50,7 @@ class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
               icon: const Icon(Icons.arrow_back, color: Colors.black),
             ),
             title: Text(
-              snapshot.data!.get("name"),
+              snapshot.data!.get("name") ?? "Defaultter",
               style: const TextStyle(color: Colors.black),
             ),
             centerTitle: true,
@@ -117,13 +124,128 @@ class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
                     const SizedBox(
                       height: 30.0,
                     ),
-                    const Text(
-                      'Select a Date for a meeting',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                    GestureDetector(
+                      onTap: () async {
+                        selectedDateTime = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime.now().add(
+                            const Duration(days: 10),
+                          ),
+                        );
+                        print(selectedDateTime);
+                        setState(() {});
+                      },
+                      child: const Text(
+                        'Tap to Book a Starting',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
+                    ),
+                    Text(
+                      selectedDateTime != null
+                          ? DateFormat('EEE, d/M/y').format(selectedDateTime!)
+                          : "" "No Date Selected",
+                      style: const TextStyle(
+                        fontSize: 15,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 30.0,
+                    ),
+
+                    //// Time Slots booking Starting time
+                    GestureDetector(
+                      onTap: () async {
+                        startingTime = await showTimePicker(
+                          context: context,
+                          initialTime: const TimeOfDay(hour: 8, minute: 30),
+                        );
+                        print(startingTime);
+                        setState(() {});
+                      },
+                      child: Row(
+                        children: const [
+                          Text(
+                            'Starting Time',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Icon(Icons.edit),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      startingTime != null
+                          ? startingTime!.format(context)
+                          : "" "No Starting Time Selected",
+                      style: const TextStyle(
+                        fontSize: 15,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 30.0,
+                    ),
+
+                    /// Ending Time For seletced Date
+                    GestureDetector(
+                      onTap: () async {
+                        endingTime = await showTimePicker(
+                          context: context,
+                          initialTime: const TimeOfDay(hour: 8, minute: 30),
+                        );
+                        print(selectedDateTime);
+                        setState(() {});
+                      },
+                      child: Row(
+                        children: const [
+                          Text(
+                            'Endings Time',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Icon(Icons.edit),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      endingTime != null
+                          ? endingTime!.format(context)
+                          : "" "No Ending Time Selected",
+                      style: const TextStyle(
+                        fontSize: 15,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 30.0,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        //
+                        Navigator.pushNamed(context, '/selectedBookings',
+                            arguments: {
+                              "roomId": widget.roomId,
+                              "startingTime": selectedDateTime.toString()
+                            });
+                      },
+                      child: const Text(
+                          'Find Bokings of this meeting room on Selected Date'),
                     )
                   ],
                 ),
@@ -138,8 +260,27 @@ class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 15),
                     ),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/home');
+                    onPressed: () async {
+                      await FirebaseFirestore.instance
+                          .collection('bookings')
+                          .add({
+                        "user": "loggedInuser",
+                        "meetingRoomId": widget.roomId,
+                        "startTimeStamp": Timestamp.fromDate(
+                          selectedDateTime!.add(
+                            Duration(
+                              minutes: startingTime!.minute,
+                              hours: startingTime!.hour,
+                            ),
+                          ),
+                        ),
+                        "endTimeStamp": Timestamp.fromDate(
+                          selectedDateTime!.add(Duration(
+                            minutes: endingTime!.minute,
+                            hours: endingTime!.hour,
+                          )),
+                        )
+                      });
                     },
                     label: const Text(
                       'Book',
