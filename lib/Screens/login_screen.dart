@@ -1,3 +1,4 @@
+import 'package:bookingapp/Services/firebase_auth_api.dart';
 import 'package:flutter/material.dart';
 
 import '../Widgets/custom_text_field.dart';
@@ -19,6 +20,9 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
+
+    _emailController!.text = "agarwalsarthak456@gmail.com";
+    _passwordController!.text = "Sarthak@123";
   }
 
   @override
@@ -80,8 +84,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 10),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   print('Start Login with email and password');
+                  await FirebaseAuthApi().loginWithEmailandPassword(
+                    context,
+                    email: _emailController!.text,
+                    password: _passwordController!.text,
+                  );
                 },
                 label: const Text(
                   'Login',
@@ -114,6 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 onPressed: () {
                   print('Start Logging in with Google');
+                  FirebaseAuthApi().signUpWithGoogle(context);
                 },
                 label: const Text(
                   'Login with Google',
@@ -124,9 +134,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              // const Divider(
-              //   thickness: 1.5,
-              // ),
               TextButton(
                 child: const Material(
                   elevation: 10,

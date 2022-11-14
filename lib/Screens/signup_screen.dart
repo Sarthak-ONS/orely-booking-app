@@ -127,6 +127,39 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ),
               ),
+              const SizedBox(
+                height: 15,
+              ),
+              ElevatedButton.icon(
+                icon: Image.asset(
+                  'Assets/Images/google.png',
+                  height: 30,
+                ),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.white,
+                  shadowColor: Colors.black54,
+                  elevation: 10,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: const BorderSide(
+                      color: AppColors.primayColor,
+                    ),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                ),
+                onPressed: () {
+                  print('Start Signup in with Google');
+                  FirebaseAuthApi().signUpWithGoogle(context);
+                },
+                label: const Text(
+                  'Signup with Google',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
