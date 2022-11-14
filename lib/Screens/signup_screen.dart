@@ -1,32 +1,42 @@
+import 'package:bookingapp/Services/firebase_auth_api.dart';
 import 'package:flutter/material.dart';
 
 import '../Widgets/custom_text_field.dart';
 import '../appp_colors.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   TextEditingController? _emailController;
   TextEditingController? _passwordController;
+  TextEditingController? _nameController;
 
   @override
   void initState() {
     super.initState();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
+    _nameController = TextEditingController();
+
+    _emailController!.text = "agarwalsarthak456@gmail.com";
+    _passwordController!.text = "Sarthak@123";
+    _nameController!.text = "Sarthak Agarwal";
   }
 
   @override
   void dispose() {
     _emailController!.dispose();
     _passwordController!.dispose();
+    _nameController!.dispose();
     super.dispose();
   }
+
+  bool showPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +58,24 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(
-                height: 20.0,
+                height: 25.0,
+              ),
+              const Text(
+                'We are very excited to have you on board!',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+              const SizedBox(
+                height: 10.0,
+              ),
+              CustomTextFormField(
+                emailController: _nameController,
+                hintText: 'Name',
+              ),
+              const SizedBox(
+                height: 10.0,
               ),
               CustomTextFormField(emailController: _emailController),
               const SizedBox(
@@ -56,15 +83,16 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               CustomTextFormField(
                 emailController: _passwordController,
-                isPasswordField: true,
+                isPasswordField: showPassword,
                 hintText: 'Password',
               ),
               const SizedBox(
                 height: 10.0,
               ),
-              const Text(
-                'Forgot Password?',
-                textAlign: TextAlign.end,
+              CustomTextFormField(
+                emailController: _passwordController,
+                isPasswordField: showPassword,
+                hintText: 'Confirm Password',
               ),
               const SizedBox(
                 height: 10.0,
@@ -72,77 +100,32 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton.icon(
                 icon: Container(),
                 style: ElevatedButton.styleFrom(
-                  shadowColor: Colors.black54,
-                  elevation: 10,
                   primary: AppColors.primayColor,
+                  elevation: 10,
+                  shadowColor: Colors.black54,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 10),
                 ),
                 onPressed: () {
-                  print('Start Login with email and password');
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  print("Start Sign Up Proces");
+                  FirebaseAuthApi().signUpWithEmailAndPassword(
+                    context,
+                    name: _nameController!.text,
+                    email: _emailController!.text,
+                    password: _passwordController!.text,
+                  );
                 },
                 label: const Text(
-                  'Login',
+                  'Sign Up',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.w300,
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: 10.0,
-              ),
-              ElevatedButton.icon(
-                icon: Image.asset(
-                  'Assets/Images/google.png',
-                  height: 30,
-                ),
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.white,
-                  shadowColor: Colors.black54,
-                  elevation: 10,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    side: const BorderSide(
-                      color: AppColors.primayColor,
-                    ),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                ),
-                onPressed: () {
-                  print('Start Logging in with Google');
-                },
-                label: const Text(
-                  'Login with Google',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ),
-              // const Divider(
-              //   thickness: 1.5,
-              // ),
-              TextButton(
-                child: const Material(
-                  elevation: 10,
-                  shadowColor: Colors.black54,
-                  child: Text(
-                    'Dont have a account? Sign up!',
-                    style: TextStyle(
-                      color: Colors.black,
-                      backgroundColor: Colors.transparent,
-                      foreground: null,
-                    ),
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/signup');
-                },
               ),
             ],
           ),

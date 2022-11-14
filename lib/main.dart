@@ -1,4 +1,4 @@
-import 'package:bookingapp/Screens/login_screen.dart';
+import 'package:bookingapp/route_generator.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -17,8 +17,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(fontFamily: 'Roboto'),
-      home: const LoginScreen(),
+      theme: ThemeData(
+        fontFamily: 'Roboto',
+      ),
+      initialRoute: '/',
+      onGenerateRoute: RouteGenerator().generateRoute,
     );
   }
 }
