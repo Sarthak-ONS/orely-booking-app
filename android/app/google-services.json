@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "900655566468",
+    "project_id": "booking-app-91522",
+    "storage_bucket": "booking-app-91522.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:900655566468:android:3c86f4e017d54e742ebcd1",
+        "android_client_info": {
+          "package_name": "com.sarthak.booking_app.bookingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "900655566468-2m74gf7uquj56qqm9epgh4u6r57gndbq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sarthak.booking_app.bookingapp",
+            "certificate_hash": "01ee2d42ec83c57dd3eb5c74008a3fe08f8edfc1"
+          }
+        },
+        {
+          "client_id": "900655566468-odkb8c2olv0f8b9uee5m66litc0dis5v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFllhTgvTdsrBeMFjkz9DkHG6Q-Mo4gc4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "900655566468-odkb8c2olv0f8b9uee5m66litc0dis5v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
