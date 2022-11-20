@@ -69,7 +69,7 @@ class _InitialScreenState extends State<InitialScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 15),
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/home');
+                  Navigator.pushNamed(context, '/login');
                 },
                 label: const Text(
                   'Get Started',

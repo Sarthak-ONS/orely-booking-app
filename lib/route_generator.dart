@@ -1,3 +1,4 @@
+import 'package:bookingapp/Screens/forgot_password_screen.dart';
 import 'package:bookingapp/Screens/home_screens.dart';
 import 'package:bookingapp/Screens/initial_screen.dart';
 import 'package:bookingapp/Screens/login_screen.dart';
@@ -14,6 +15,8 @@ class RouteGenerator {
         return getMaterialPageRoute(const InitialScreen());
       case '/login':
         return getMaterialPageRoute(const LoginScreen());
+      case '/forgotPassword':
+        return getMaterialPageRoute(const ForgotPasswordScreen());
       case '/signup':
         return getMaterialPageRoute(const SignupScreen());
       case '/home':

@@ -1,5 +1,7 @@
+import 'package:bookingapp/Services/firebase_auth_api.dart';
 import 'package:bookingapp/appp_colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -10,13 +12,82 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const Drawer(),
+      key: _scaffoldKey,
+      drawer: Drawer(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              children: [
+                UserAccountsDrawerHeader(
+                  accountName: Row(
+                    children: [
+                      Text(FirebaseAuth.instance.currentUser!.displayName!),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      FirebaseAuth.instance.currentUser!.emailVerified
+                          ? const Icon(
+                              Icons.verified_outlined,
+                              color: Colors.white,
+                              size: 15,
+                            )
+                          : Container()
+                    ],
+                  ),
+                  accountEmail: Text(FirebaseAuth.instance.currentUser!.email!),
+                  currentAccountPicture: ClipOval(
+                    child: Image.network(
+                        FirebaseAuth.instance.currentUser!.photoURL!),
+                  ),
+                  decoration: const BoxDecoration(color: AppColors.primayColor),
+                ),
+                ListTile(
+                  title: const Text('Active Bookings'),
+                  onTap: () {},
+                  trailing: const Icon(Icons.book_online),
+                ),
+                ListTile(
+                  title: const Text('Past  Bookings'),
+                  trailing: const Icon(Icons.book_outlined),
+                  onTap: () {},
+                ),
+                ListTile(
+                  title: const Text('Settings'),
+                  trailing: const Icon(Icons.settings),
+                  onTap: () {},
+                ),
+                ListTile(
+                  title: const Text('Signout'),
+                  onTap: () {
+                    FirebaseAuthApi().signoutOfDevice(context);
+                  },
+                  trailing: const Icon(Icons.exit_to_app_rounded),
+                ),
+              ],
+            ),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text(
+                'Made by Sarthak Agarwal',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
       appBar: AppBar(
         leading: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              _scaffoldKey.currentState!.openDrawer();
+            },
             icon: const Icon(
               Icons.menu_sharp,
               color: Colors.black,
@@ -28,6 +99,16 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: () {
+                FirebaseAuthApi().signoutOfDevice(context);
+              },
+              icon: const Icon(
+                Icons.exit_to_app,
+                color: Colors.black,
+              ))
+        ],
       ),
       body: FutureBuilder(
         future: FirebaseFirestore.instance.collection('MeetingRooms').get(),

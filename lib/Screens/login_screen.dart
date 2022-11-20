@@ -66,9 +66,15 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(
                 height: 10.0,
               ),
-              const Text(
-                'Forgot Password?',
-                textAlign: TextAlign.end,
+              GestureDetector(
+                onTap: () async {
+                  print("Start custom Password Forgot Function");
+                  Navigator.pushNamed(context, '/forgotPassword');
+                },
+                child: const Text(
+                  'Forgot Password?',
+                  textAlign: TextAlign.end,
+                ),
               ),
               const SizedBox(
                 height: 10.0,
@@ -91,6 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     email: _emailController!.text,
                     password: _passwordController!.text,
                   );
+                  print("Completed Signing in with Email and Password");
                 },
                 label: const Text(
                   'Login',

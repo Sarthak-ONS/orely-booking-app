@@ -40,6 +40,7 @@ dependencies:
   intl:
   cloud_firestore: 
   google_sign_in:
+  http:
 
 dependency_overrides:
   firebase_core_platform_interface: 4.5.1

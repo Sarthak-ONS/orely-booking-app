@@ -138,7 +138,7 @@ class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
                         setState(() {});
                       },
                       child: const Text(
-                        'Tap to Book a Starting',
+                        'Tap to Book a Date',
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
@@ -245,7 +245,19 @@ class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
                             });
                       },
                       child: const Text(
-                          'Find Bokings of this meeting room on Selected Date'),
+                        'Find Bookings of this meeting room on Selected Date',
+                        style: TextStyle(
+                          color: Colors.blueAccent,
+                        ),
+                      ),
+                    ),
+                    const Text(
+                      'You can find meetings of this room on selected date, so that you can book this meeting room on available slots. Please note that you can also contact the booking person of a specific slot, and change the bookings.',
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontWeight: FontWeight.w300,
+                        fontStyle: FontStyle.italic,
+                      ),
                     )
                   ],
                 ),

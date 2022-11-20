@@ -1,3 +1,4 @@
+import 'package:bookingapp/appp_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -23,10 +24,76 @@ class FirebaseAuthApi {
     }
   }
 
-  Future signoutOfDevice() async {
+  Future forgotPassword(context, {required String email}) async {
     try {
-      _firebaseAuth.signOut();
-      _googleSignIn.signOut();
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircleAvatar(
+                radius: 35,
+                backgroundColor: AppColors.primayColor,
+                child: CircleAvatar(
+                  radius: 33,
+                  backgroundColor: Colors.white,
+                  child: Icon(
+                    Icons.check,
+                    color: AppColors.primayColor,
+                    size: 30,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Text(
+                'We have sent a email to $email. Please check your email',
+                textAlign: TextAlign.left,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w300,
+                ),
+              )
+            ],
+          ),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      print(e);
+
+      if (e.code == "user-not-found") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text(
+              'Account does not exists, Please Sign up',
+            ),
+          ),
+        );
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text(
+            e.message.toString(),
+          ),
+        ),
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future signoutOfDevice(context) async {
+    try {
+      await _firebaseAuth.signOut();
+      await _googleSignIn.signOut();
+      Navigator.pushNamed(context, '/');
     } catch (e) {
       print(e);
     }
@@ -46,9 +113,10 @@ class FirebaseAuthApi {
       print(userCredential);
       print("//////////////////////");
       print(userCredential.user);
-      await userCredential.user!.sendEmailVerification();
+
       Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
     } on FirebaseAuthException catch (e) {
+      print(e);
       if (e.code == "user-not-found") {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
