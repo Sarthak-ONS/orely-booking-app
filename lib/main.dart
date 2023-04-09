@@ -1,6 +1,4 @@
-import 'package:bookingapp/Screens/error_screen.dart';
 import 'package:bookingapp/route_generator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -19,28 +17,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasError) {
-          return const ErrorScreen();
-        }
-
-        if (snapshot.data == null) {
-          getMaterialAppWithRoute(path: '/');
-        }
-
-        if (snapshot.connectionState == ConnectionState.none) {
-          return getMaterialAppWithRoute(path: '/');
-        }
-        return getMaterialAppWithRoute(path: '/home');
-      },
-    );
+    return getMaterialAppWithRoute(path: '/');
   }
 
   Widget getMaterialAppWithRoute({required String path}) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Orely',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'Roboto',

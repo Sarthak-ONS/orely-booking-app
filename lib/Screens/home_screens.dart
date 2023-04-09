@@ -18,6 +18,16 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          // await RequestHelper().request(endPoint: '/user/sendEmail', bodyMap: {
+          //   "name": "Sarthak Agarwal",
+          //   "formattedDate": "12-4-2023",
+          //   "formattedTime": "12:30-1:00",
+          //   "meetingObjective": "Meeting Presentation"
+          // });
+        },
+      ),
       drawer: Drawer(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -106,16 +116,6 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        actions: [
-          IconButton(
-              onPressed: () {
-                FirebaseAuthApi().signoutOfDevice(context);
-              },
-              icon: const Icon(
-                Icons.exit_to_app,
-                color: Colors.black,
-              ))
-        ],
       ),
       body: FutureBuilder(
         future: FirebaseFirestore.instance.collection('MeetingRooms').get(),

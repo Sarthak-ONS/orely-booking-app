@@ -270,7 +270,17 @@ class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
                       const SizedBox(
                         height: 30.0,
                       ),
-
+                      const Text(
+                        'Meeting Objective',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 15.0,
+                      ),
                       CustomTextFormField(
                         emailController: _textEditingController,
                         hintText: 'Meeting Objective (16 letters only!)',
@@ -346,6 +356,7 @@ class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
                           );
                           return;
                         }
+
                         final formattedDate = selectedDateTime!.day.toString() +
                             selectedDateTime!.month.toString() +
                             selectedDateTime!.year.toString();
@@ -362,6 +373,14 @@ class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
                             .replaceAll("(", "")
                             .replaceAll(")", "")
                             .replaceAll(":", "");
+
+                        var realDateTimeCompare = DateTime(
+                          selectedDateTime!.year,
+                          selectedDateTime!.month,
+                          selectedDateTime!.day,
+                          startingTime!.hour,
+                          startingTime!.minute,
+                        );
 
                         if (selectedDateTime == null ||
                             startingTime == null ||
@@ -416,6 +435,18 @@ class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
                               behavior: SnackBarBehavior.floating,
                               content: Text(
                                 'Please enter a meeting objective',
+                              ),
+                            ),
+                          );
+                          return;
+                        }
+
+                        if (realDateTimeCompare.compareTo(DateTime.now()) < 0) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              content: Text(
+                                'Please enter a valid time',
                               ),
                             ),
                           );

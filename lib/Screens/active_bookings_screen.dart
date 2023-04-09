@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../Services/request_helper.dart';
 import '../helper_functions.dart';
 
 class ActiveBookingScreen extends StatefulWidget {
@@ -71,7 +72,7 @@ class _ActiveBookingScreenState extends State<ActiveBookingScreen> {
             itemCount: allBookings.length,
             itemBuilder: (context, index) {
               if (convertToFornattedDateTime(
-                          allBookings[index]['formatted_date'])
+                          allBookings[index]['formatted_date'], 0, 0)
                       .compareTo(DateTime(DateTime.now().year,
                           DateTime.now().month, DateTime.now().day)) >=
                   0) {
@@ -84,10 +85,20 @@ class _ActiveBookingScreenState extends State<ActiveBookingScreen> {
                 var formattedEndtime = endTime.substring(0, 2) +
                     ":" +
                     endTime.substring(2, endTime.length);
+                print((DateTime.now().compareTo(convertToFornattedDateTime(
+                            allBookings[index]['formatted_date'],
+                            int.parse(startTime.substring(0, 2)),
+                            int.parse(startTime.substring(2, 4)))) <
+                        0) ||
+                    (DateTime.now().compareTo(convertToFornattedDateTime(
+                            allBookings[index]['formatted_date'],
+                            int.parse(endTime.substring(0, 2)),
+                            int.parse(endTime.substring(2, 4)))) >
+                        0));
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 4.0),
                   child: ExpansionTile(
-                    initiallyExpanded: true,
+                    initiallyExpanded: false,
                     collapsedBackgroundColor: Colors.white60,
                     iconColor: Colors.green,
                     title: Text("${allBookings[index]['meeting_objective']}"),
@@ -96,7 +107,7 @@ class _ActiveBookingScreenState extends State<ActiveBookingScreen> {
                     childrenPadding: const EdgeInsets.symmetric(horizontal: 8),
                     children: [
                       Text(
-                        'Date : ${DateFormat('yyyy-MM-dd').format(convertToFornattedDateTime(allBookings[index]['formatted_date']))}',
+                        'Date : ${DateFormat('yyyy-MM-dd').format(convertToFornattedDateTime(allBookings[index]['formatted_date'], 0, 0))}',
                       ),
                       const SizedBox(
                         height: 15,
@@ -264,32 +275,30 @@ class _ActiveBookingScreenState extends State<ActiveBookingScreen> {
                                   const SizedBox(
                                     height: 20,
                                   ),
-                                  ElevatedButton.icon(
-                                    icon: const Icon(Icons.lock),
-                                    style: ElevatedButton.styleFrom(
-                                      primary: AppColors.primayColor,
-                                      shadowColor: Colors.black54,
-                                      elevation: 10,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        side: const BorderSide(
-                                          color: AppColors.primayColor,
-                                        ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      LockUnlockButton(
+                                        allBookings: allBookings,
+                                        startTime: startTime,
+                                        endTime: endTime,
+                                        index: index,
+                                        buttonText: 'Lock',
                                       ),
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 8),
-                                    ),
-                                    onPressed: () {},
-                                    label: const Text(
-                                      'Lock/Unlock Door',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w300,
+                                      const SizedBox(
+                                        width: 5,
                                       ),
-                                    ),
-                                  ),
+                                      LockUnlockButton(
+                                        allBookings: allBookings,
+                                        startTime: startTime,
+                                        endTime: endTime,
+                                        index: index,
+                                        buttonText: 'Unlock',
+                                      ),
+                                    ],
+                                  )
                                 ],
                               ),
                             ),
@@ -311,13 +320,6 @@ class _ActiveBookingScreenState extends State<ActiveBookingScreen> {
                           color: Colors.white,
                         ),
                         onPressed: () async {
-                          // showDialog(
-                          //   context: context,
-                          //   builder: (_) => AlertDialog(
-                          //     title: const Text('Are you sure?'),
-                          //     content: ,
-                          //   ),
-                          // );
                           showModalBottomSheet(
                             backgroundColor: Colors.transparent,
                             context: context,
@@ -402,6 +404,73 @@ class _ActiveBookingScreenState extends State<ActiveBookingScreen> {
             },
           );
         },
+      ),
+    );
+  }
+}
+
+class LockUnlockButton extends StatelessWidget {
+  const LockUnlockButton({
+    Key? key,
+    required this.allBookings,
+    required this.index,
+    required this.startTime,
+    required this.endTime,
+    required this.buttonText,
+  }) : super(key: key);
+  final int index;
+  final List allBookings;
+  final String startTime;
+  final String endTime;
+  final String buttonText;
+
+  @override
+  Widget build(BuildContext context) {
+    var lockunlockCondition = (DateTime.now().compareTo(
+                convertToFornattedDateTime(
+                    allBookings[index]['formatted_date'],
+                    int.parse(startTime.substring(0, 2)),
+                    int.parse(startTime.substring(2, 4)))) >
+            0) &&
+        (DateTime.now().compareTo(convertToFornattedDateTime(
+                allBookings[index]['formatted_date'],
+                int.parse(endTime.substring(0, 2)),
+                int.parse(endTime.substring(2, 4)))) <
+            0);
+    return ElevatedButton.icon(
+      icon: buttonText == 'Lock'
+          ? const Icon(Icons.lock)
+          : const Icon(Icons.lock_open),
+      style: ElevatedButton.styleFrom(
+        primary: lockunlockCondition
+            ? AppColors.primayColor
+            : AppColors.primayColor.withOpacity(0.50),
+        shadowColor: Colors.black54,
+        elevation: 10,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          side: const BorderSide(
+            color: AppColors.primayColor,
+          ),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 50),
+      ),
+      onPressed: () async {
+        if (lockunlockCondition) {
+          final body = await RequestHelper().request(
+              endPoint:
+                  buttonText == 'Lock' ? '/user/lockDoor' : '/user/unlockDoor',
+              bodyMap: {});
+          print(body);
+        }
+      },
+      label: Text(
+        buttonText,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.w300,
+        ),
       ),
     );
   }

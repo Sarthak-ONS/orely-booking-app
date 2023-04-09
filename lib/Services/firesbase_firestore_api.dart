@@ -1,46 +1,24 @@
-import 'dart:convert';
+import 'package:bookingapp/Services/request_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+
+import '../helper_functions.dart';
 
 class FirebaseFirestoreApi {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
-  Future sendEmailBookingConfirmtaion({
-    required String addressName,
-    required String date,
-    required String timeStringm,
-    required String name,
-  }) async {
+  Future sendEmailBookingConfirmtaion(String name, String formattedDate,
+      String formattedTime, String meetingObjective) async {
     try {
-      print("////////////");
-
-      final bodyMap = jsonEncode({
-        "addressList": [
-          "gsamarth14@gmail.com",
-          "sarthak1931006@akgec.ac.in",
-          "samarth1931005@akgec.ac.in",
-          "bookexpo1810@gmail.com",
-          FirebaseAuth.instance.currentUser!.email!,
-        ],
-        "messageString":
-            "Your booking for $date at $timeStringm is confirmed at $name. We wish you a happy meeting",
+      await RequestHelper().request(endPoint: '/user/sendEmail', bodyMap: {
+        "name": name,
+        "formattedDate": formattedDate,
+        "formattedTime": formattedTime,
+        "meetingObjective": meetingObjective
       });
-      print(bodyMap);
-
-      http.Response res = await http.post(
-        Uri.parse(
-          "http://localhost:4000/user/sendEmail",
-        ),
-        body: bodyMap,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      );
-      print(res.body);
     } catch (e) {
-      print("////////////\\\\\\\\\\\\\\\\\\\\\\\\\"");
       print(e);
     }
   }
@@ -161,12 +139,19 @@ class FirebaseFirestoreApi {
         ]),
       });
 
-      // await sendEmailBookingConfirmtaion(
-      //   addressName: FirebaseAuth.instance.currentUser!.email!.toString(),
-      //   date: messageStringDate,
-      //   timeStringm: startEndTimeMessageString,
-      //   name: roomName,
-      // );
+      await sendEmailBookingConfirmtaion(
+          FirebaseAuth.instance.currentUser!.displayName!,
+          DateFormat('yyyy-MM-dd')
+              .format(convertToFornattedDateTime(formattedDate, 0, 0))
+              .toString(),
+          startTime.substring(0, 2) +
+              ":" +
+              startTime.substring(2, 4) +
+              " - " +
+              endTime.substring(0, 2) +
+              ":" +
+              endTime.substring(2, 4),
+          meetingObjective);
     } catch (e) {
       print(e);
     }

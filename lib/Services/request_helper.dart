@@ -1,20 +1,24 @@
+import 'dart:convert';
+
+import 'package:bookingapp/constants.dart';
 import 'package:http/http.dart' as http;
 
 class RequestHelper {
-  final hostUrl = "http://localhost:4000";
-
-  Future request({required String endPoint}) async {
+  Future request({required String endPoint, required Map bodyMap}) async {
     try {
-      final http.Response response = await http.post(Uri.parse(endPoint));
-      if (response.statusCode < 300) {
-        print(response.body);
-        print(response);
-        return response.body;
+      print(json.encode(bodyMap));
+      final http.Response response = await http.post(
+          Uri.parse('$serverHost$endPoint'.trim()),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode(bodyMap));
+      print(response.body);
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
       }
+      return null;
     } catch (e) {
       print(e);
       return null;
     }
-    return null;
   }
 }

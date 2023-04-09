@@ -42,7 +42,7 @@ class _PastBookingScreenState extends State<PastBookingScreen> {
       ),
       body: FutureBuilder(
         future: FirebaseFirestore.instance
-            .collection('Users_bookings')
+            .collection('Users')
             .doc(FirebaseAuth.instance.currentUser!.uid)
             .get(),
         builder:
@@ -57,7 +57,7 @@ class _PastBookingScreenState extends State<PastBookingScreen> {
               child: Text("Please try again later"),
             );
           }
-          List allBookings = snapshot.data!.get('active_bookings');
+          List allBookings = snapshot.data!.get('bookings');
 
           return ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 8),

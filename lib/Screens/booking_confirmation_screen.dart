@@ -16,7 +16,7 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
   void initState() {
     super.initState();
 
-    Timer(const Duration(seconds: 2), () {
+    Timer(const Duration(seconds: 5), () {
       Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
     });
   }
@@ -27,8 +27,8 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const CircleAvatar(
+          children: const [
+            CircleAvatar(
               radius: 40,
               backgroundColor: AppColors.primayColor,
               child: Icon(
@@ -36,20 +36,20 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
                 color: Colors.white,
               ),
             ),
-            const SizedBox(
+            SizedBox(
               height: 25,
             ),
-            const Text(
+            Text(
               'Booking Confirmed!',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w300,
               ),
             ),
-            const SizedBox(
+            SizedBox(
               height: 25,
             ),
-            const Text(
+            Text(
               'We have sent you all the details of the booking on your registered email!',
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -57,15 +57,7 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
                 fontWeight: FontWeight.w300,
               ),
             ),
-            TextButton(
-              onPressed: () {
-                // Unn=lock Door For Gate
-                print("Unlocking Door");
-                // await FirebaseFirestoreApi().unlockDoor();
-              },
-              child: const Text('UNLOCK DOOR!'),
-            ),
-            const SizedBox(
+            SizedBox(
               height: 30,
             ),
           ],
