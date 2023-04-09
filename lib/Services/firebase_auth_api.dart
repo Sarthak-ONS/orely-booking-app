@@ -1,3 +1,4 @@
+import 'package:bookingapp/Services/firesbase_firestore_api.dart';
 import 'package:bookingapp/appp_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,12 @@ class FirebaseAuthApi {
           idToken: googleSignInAuthentication?.idToken);
       UserCredential userCredential =
           await _firebaseAuth.signInWithCredential(credential);
-      print(userCredential);
+      await FirebaseFirestoreApi().saveUserToDatabase(
+        name: userCredential.user!.displayName!,
+        email: userCredential.user!.email!,
+        photoUrl: userCredential.user!.photoURL!,
+        userId: userCredential.user!.uid,
+      );
       Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
     } catch (e) {
       print(e);
@@ -93,7 +99,7 @@ class FirebaseAuthApi {
     try {
       await _firebaseAuth.signOut();
       await _googleSignIn.signOut();
-      Navigator.pushNamed(context, '/');
+      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
     } catch (e) {
       print(e);
     }
@@ -151,8 +157,13 @@ class FirebaseAuthApi {
       UserCredential userCredential = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
       await userCredential.user!.updateDisplayName(name);
+      await FirebaseFirestoreApi().saveUserToDatabase(
+        name: name,
+        email: email,
+        photoUrl: userCredential.user!.photoURL!,
+        userId: userCredential.user!.uid,
+      );
       await userCredential.user!.sendEmailVerification();
-      print(userCredential.user);
       Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
     } on FirebaseAuthException catch (e) {
       print(e);

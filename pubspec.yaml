@@ -41,6 +41,7 @@ dependencies:
   cloud_firestore: 
   google_sign_in:
   http:
+  url_launcher:
 
 dependency_overrides:
   firebase_core_platform_interface: 4.5.1
@@ -89,6 +90,9 @@ flutter:
     - family: Roboto
       fonts:
         - asset: Assets/Fonts/RobotoSlab-Regular.ttf
+    - family: Poppins
+      fonts:
+        - asset: Assets/Fonts/Poppins-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
     - family: Logo

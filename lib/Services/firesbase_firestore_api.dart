@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:bookingapp/Services/request_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -136,7 +134,7 @@ class FirebaseFirestoreApi {
             .update(
           {
             s: {
-              "user_id": "alkd-current-User iD",
+              "user_id": FirebaseAuth.instance.currentUser!.uid,
             },
           },
         );
@@ -146,10 +144,10 @@ class FirebaseFirestoreApi {
       Navigator.pushNamed(context, '/bookingConfirmation');
 
       await _firebaseFirestore
-          .collection('Users_bookings')
+          .collection('Users')
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .update({
-        "active_bookings": FieldValue.arrayUnion([
+        "bookings": FieldValue.arrayUnion([
           {
             "meeting_objective": meetingObjective,
             "meeting_room_name": meetingRoomName,
@@ -174,10 +172,27 @@ class FirebaseFirestoreApi {
     }
   }
 
-  Future unlockDoor() async {
-    print("sasdjanjkasd///da/das/d/asd/as/d/as");
+  Future saveUserToDatabase({
+    required String name,
+    required String email,
+    required String photoUrl,
+    required String userId,
+    String? phoneNo,
+  }) async {
     try {
-      await RequestHelper().request(endPoint: '/user/unlockDoor');
+      final DocumentSnapshot snapshot =
+          await _firebaseFirestore.collection('Users').doc(userId).get();
+      if (snapshot.exists) {
+      } else {
+        _firebaseFirestore.collection('Users').doc(userId).set({
+          "name": name,
+          "email": email,
+          "photoUrl": photoUrl,
+          "user_id": userId,
+          "phoneNo": phoneNo ?? "",
+          "bookings": []
+        });
+      }
     } catch (e) {
       print(e);
     }

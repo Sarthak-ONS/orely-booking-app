@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../helper_functions.dart';
+
 class ActiveBookingScreen extends StatefulWidget {
   const ActiveBookingScreen({Key? key}) : super(key: key);
 
@@ -12,34 +14,6 @@ class ActiveBookingScreen extends StatefulWidget {
 }
 
 class _ActiveBookingScreenState extends State<ActiveBookingScreen> {
-  DateTime convertToFornattedDateTime(String formattedDateTime) {
-    int year = int.parse(formattedDateTime.substring(
-        formattedDateTime.length - 4, formattedDateTime.length));
-    formattedDateTime = formattedDateTime.replaceRange(
-        formattedDateTime.length - 4, formattedDateTime.length, "");
-    int month =
-        int.parse(formattedDateTime.substring(formattedDateTime.length - 1));
-    formattedDateTime = formattedDateTime.replaceRange(
-        formattedDateTime.length - 1, formattedDateTime.length, "");
-    int day = int.parse(formattedDateTime);
-    DateTime fd = DateTime(year, month, day);
-    return fd;
-  }
-
-  Future<String> getVenue({required String meetingRoomId}) async {
-    try {
-      final DocumentSnapshot data = await FirebaseFirestore.instance
-          .collection('MeetingRooms')
-          .doc(meetingRoomId)
-          .get();
-      print(data.get("name"));
-      return data.get("name");
-    } catch (e) {
-      print(e);
-      return "";
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -56,7 +30,7 @@ class _ActiveBookingScreenState extends State<ActiveBookingScreen> {
       ),
       body: FutureBuilder(
         future: FirebaseFirestore.instance
-            .collection('Users_bookings')
+            .collection('Users')
             .doc(FirebaseAuth.instance.currentUser!.uid)
             .get(),
         builder:
@@ -71,7 +45,7 @@ class _ActiveBookingScreenState extends State<ActiveBookingScreen> {
               child: Text("Please try again later"),
             );
           }
-          List allBookings = snapshot.data!.get('active_bookings');
+          List allBookings = snapshot.data!.get('bookings');
 
           return ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 8),
