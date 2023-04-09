@@ -1,7 +1,10 @@
+import 'package:bookingapp/Screens/active_bookings_screen.dart';
+import 'package:bookingapp/Screens/booking_confirmation_screen.dart';
 import 'package:bookingapp/Screens/forgot_password_screen.dart';
 import 'package:bookingapp/Screens/home_screens.dart';
 import 'package:bookingapp/Screens/initial_screen.dart';
 import 'package:bookingapp/Screens/login_screen.dart';
+import 'package:bookingapp/Screens/past_booking_screen.dart';
 import 'package:bookingapp/Screens/room_description_screen.dart';
 import 'package:bookingapp/Screens/signup_screen.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +24,8 @@ class RouteGenerator {
         return getMaterialPageRoute(const SignupScreen());
       case '/home':
         return getMaterialPageRoute(const HomeScreen());
+      case '/bookingConfirmation':
+        return getMaterialPageRoute(const BookingConfirmationScreen());
       case '/roomDes':
         Map ar = routeSettings.arguments as Map;
         return getMaterialPageRoute(
@@ -28,6 +33,10 @@ class RouteGenerator {
             roomId: ar['roomId'],
           ),
         );
+      case '/activeBookingScreen':
+        return getMaterialPageRoute(const ActiveBookingScreen());
+      case '/pastBookingScreen':
+        return getMaterialPageRoute(const PastBookingScreen());
       case '/selectedBookings':
         Map ar = routeSettings.arguments as Map;
         print(ar);

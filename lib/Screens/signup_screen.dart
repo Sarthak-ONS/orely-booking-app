@@ -14,6 +14,7 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   TextEditingController? _emailController;
   TextEditingController? _passwordController;
+  TextEditingController? _confirmPasswordController;
   TextEditingController? _nameController;
 
   @override
@@ -22,10 +23,7 @@ class _SignupScreenState extends State<SignupScreen> {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _nameController = TextEditingController();
-
-    _emailController!.text = "agarwalsarthak456@gmail.com";
-    _passwordController!.text = "Sarthak@123";
-    _nameController!.text = "Sarthak Agarwal";
+    _confirmPasswordController = TextEditingController();
   }
 
   @override
@@ -36,7 +34,7 @@ class _SignupScreenState extends State<SignupScreen> {
     super.dispose();
   }
 
-  bool showPassword = false;
+  bool showPassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +88,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 height: 10.0,
               ),
               CustomTextFormField(
-                emailController: _passwordController,
+                emailController: _confirmPasswordController,
                 isPasswordField: showPassword,
                 hintText: 'Confirm Password',
               ),
@@ -111,6 +109,10 @@ class _SignupScreenState extends State<SignupScreen> {
                 onPressed: () {
                   FocusManager.instance.primaryFocus?.unfocus();
                   print("Start Sign Up Proces");
+                  if (_emailController!.text.isEmpty ||
+                      _passwordController!.text.isEmpty ||
+                      _confirmPasswordController!.text.isEmpty ||
+                      _nameController!.text.isEmpty) return;
                   FirebaseAuthApi().signUpWithEmailAndPassword(
                     context,
                     name: _nameController!.text,

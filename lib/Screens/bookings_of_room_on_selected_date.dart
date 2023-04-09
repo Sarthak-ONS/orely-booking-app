@@ -17,14 +17,30 @@ class BookingsOnSelectedDate extends StatefulWidget {
 }
 
 class _BookingsOnSelectedDateState extends State<BookingsOnSelectedDate> {
+  String changetoFormattedDate() {
+    final x = DateTime.parse(widget.startingDate!);
+    final formattedDate =
+        x.day.toString() + x.month.toString() + x.year.toString();
+    return formattedDate;
+  }
+
+  makeSlots(Map bookedSlotsMapDateWise) {
+    bookedSlotsMapDateWise.forEach((key, value) {
+      var userId;
+      if (value['user_id'] != null) {
+        userId = value['user_id'];
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    changetoFormattedDate();
+  }
+
   @override
   Widget build(BuildContext context) {
-    print(widget.roomId);
-    print(widget.startingDate);
-    print(Timestamp.fromDate(DateTime.parse(widget.startingDate!)));
-    print(DateTime.parse(widget.startingDate!).millisecondsSinceEpoch);
-    DateTime temp = DateTime.parse(widget.startingDate!);
-    print(temp.microsecondsSinceEpoch);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -46,13 +62,12 @@ class _BookingsOnSelectedDateState extends State<BookingsOnSelectedDate> {
       body: FutureBuilder(
         future: FirebaseFirestore.instance
             .collection('bookings')
-            .where("meetingRoomId", isEqualTo: widget.roomId!)
-            .where("dayDate",
-                isEqualTo: Timestamp.fromMillisecondsSinceEpoch(
-                    DateTime.parse(widget.startingDate!)
-                        .millisecondsSinceEpoch))
+            .doc('${widget.roomId}')
+            .collection('date-time')
+            .doc(changetoFormattedDate())
             .get(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
+        builder:
+            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
@@ -63,10 +78,19 @@ class _BookingsOnSelectedDateState extends State<BookingsOnSelectedDate> {
               child: Text("Please try again later"),
             );
           }
+          Map bookedSlotsMapDateWise = Map.fromEntries(
+              (snapshot.data!.data() as Map).entries.toList()
+                ..sort((e1, e2) => e1.key.compareTo(e2.key)));
+
+          print(bookedSlotsMapDateWise);
+
+          bookedSlotsMapDateWise.forEach((key, value) {
+            if (value['user_id'] != null) {}
+          });
           return ListView.builder(
-            itemCount: snapshot.data.docs.length,
+            itemCount: 5,
             itemBuilder: (context, index) => Text(
-              snapshot.data.docs[index]['meetingRoomId'],
+              index.toString(),
               style: const TextStyle(fontSize: 20),
             ),
           );

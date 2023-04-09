@@ -42,20 +42,27 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   accountEmail: Text(FirebaseAuth.instance.currentUser!.email!),
                   currentAccountPicture: ClipOval(
-                    child: Image.network(
-                        FirebaseAuth.instance.currentUser!.photoURL!),
+                    child: Image.network(FirebaseAuth
+                                .instance.currentUser!.photoURL !=
+                            null
+                        ? FirebaseAuth.instance.currentUser!.photoURL!
+                        : "https://images.pexels.com/photos/2224220/pexels-photo-2224220.jpeg?auto=compress&cs=tinysrgb&w=600"),
                   ),
                   decoration: const BoxDecoration(color: AppColors.primayColor),
                 ),
                 ListTile(
                   title: const Text('Active Bookings'),
-                  onTap: () {},
+                  onTap: () async {
+                    Navigator.pushNamed(context, '/activeBookingScreen');
+                  },
                   trailing: const Icon(Icons.book_online),
                 ),
                 ListTile(
                   title: const Text('Past  Bookings'),
                   trailing: const Icon(Icons.book_outlined),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, '/pastBookingScreen');
+                  },
                 ),
                 ListTile(
                   title: const Text('Settings'),

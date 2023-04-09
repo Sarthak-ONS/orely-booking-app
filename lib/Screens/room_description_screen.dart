@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../Services/firesbase_firestore_api.dart';
+import '../Widgets/custom_text_field.dart';
 import '../appp_colors.dart';
 
 class RoomDescriptionScreen extends StatefulWidget {
@@ -21,8 +22,11 @@ class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
 
   TimeOfDay? endingTime;
 
+  TextEditingController? _textEditingController;
+
   @override
   void initState() {
+    _textEditingController = TextEditingController();
     print(widget.roomId);
     super.initState();
   }
@@ -154,6 +158,7 @@ class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
                       const SizedBox(
                         height: 30.0,
                       ),
+
                       GestureDetector(
                         onTap: () async {
                           selectedDateTime = await showDatePicker(
@@ -265,9 +270,30 @@ class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
                       const SizedBox(
                         height: 30.0,
                       ),
+
+                      CustomTextFormField(
+                        emailController: _textEditingController,
+                        hintText: 'Meeting Objective (16 letters only!)',
+                      ),
+                      const SizedBox(
+                        height: 30.0,
+                      ),
                       GestureDetector(
                         onTap: () {
-                          //
+                          if (widget.roomId == null ||
+                              selectedDateTime == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                behavior: SnackBarBehavior.floating,
+                                content: Text(
+                                  'Please select a date!',
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+
+                          // Navigate to mavailable time slots.
                           Navigator.pushNamed(context, '/selectedBookings',
                               arguments: {
                                 "roomId": widget.roomId,
@@ -275,7 +301,7 @@ class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
                               });
                         },
                         child: const Text(
-                          'Find Bookings of this meeting room on Selected Date',
+                          'Already Booked? Check here!',
                           style: TextStyle(
                             color: Colors.blueAccent,
                           ),
@@ -355,6 +381,18 @@ class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
                           return;
                         }
 
+                        if (formattedStartTime == formattedEndTime) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              content: Text(
+                                'Please enter different starting and ending time.',
+                              ),
+                            ),
+                          );
+                          return;
+                        }
+
                         // TODO: if differnet meetings have diff timings code is left for it.
 
                         if (int.parse(formattedStartTime) < 800 ||
@@ -372,12 +410,32 @@ class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
                           return;
                         }
 
-                        FirebaseFirestoreApi().checkAValidBooking(
-                          meetingRoomId: widget.roomId!,
-                          formattedDate: formattedDate,
-                          startTime: formattedStartTime,
-                          endTime: formattedEndTime,
-                        );
+                        if (_textEditingController!.text.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              content: Text(
+                                'Please enter a meeting objective',
+                              ),
+                            ),
+                          );
+                          return;
+                        }
+
+                        FirebaseFirestoreApi().checkAValidBooking(context,
+                            meetingRoomName: snapshot.data!.get("name"),
+                            meetingObjective: _textEditingController!.text,
+                            meetingRoomId: widget.roomId!,
+                            formattedDate: formattedDate,
+                            startTime: formattedStartTime,
+                            endTime: formattedEndTime,
+                            messageStringDate: DateFormat('EEE, d/M/y')
+                                .format(selectedDateTime!)
+                                .toString(),
+                            startEndTimeMessageString:
+                                startingTime!.format(context).toString() +
+                                    endingTime!.format(context).toString(),
+                            roomName: snapshot.data!.get("name"));
                       },
                       label: const Text(
                         'Book',
