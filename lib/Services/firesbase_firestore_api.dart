@@ -156,7 +156,7 @@ class FirebaseFirestoreApi {
             "meeting_room_id": meetingRoomId,
             "start_time": startTime,
             "end_time": endTime,
-            "booking_date": Timestamp.fromDate(DateTime.now())
+            "meeting_id": ''
           }
         ]),
       });
@@ -192,6 +192,40 @@ class FirebaseFirestoreApi {
           "phoneNo": phoneNo ?? "",
           "bookings": []
         });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future deleteBookingFromBookings({
+    required String startTime,
+    required String endTime,
+    required String meetingRoomId,
+    required String formattedDate,
+  }) async {
+    try {
+      for (var i = int.parse(startTime); i < int.parse(endTime); i += 15) {
+        if (i % 100 >= 60) {
+          i = (i ~/ 100 + 1) * 100;
+        }
+        var s = i.toString();
+
+        if (s.length == 3) {
+          s = '0' + s;
+        }
+        await _firebaseFirestore
+            .collection('bookings')
+            .doc(meetingRoomId)
+            .collection('date-time')
+            .doc(formattedDate)
+            .update(
+          {
+            s: {
+              "user_id": "",
+            },
+          },
+        );
       }
     } catch (e) {
       print(e);

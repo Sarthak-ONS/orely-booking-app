@@ -30,10 +30,10 @@ class MyApp extends StatelessWidget {
           getMaterialAppWithRoute(path: '/');
         }
 
-        if (snapshot.hasData) {
-          return getMaterialAppWithRoute(path: '/home');
+        if (snapshot.connectionState == ConnectionState.none) {
+          return getMaterialAppWithRoute(path: '/');
         }
-        return getMaterialAppWithRoute(path: '/');
+        return getMaterialAppWithRoute(path: '/home');
       },
     );
   }

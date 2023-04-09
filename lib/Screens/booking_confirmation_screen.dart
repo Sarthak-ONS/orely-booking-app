@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bookingapp/appp_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -14,9 +16,9 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
   void initState() {
     super.initState();
 
-    // Timer(const Duration(seconds: 2), () {
-    //   Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
-    // });
+    Timer(const Duration(seconds: 2), () {
+      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+    });
   }
 
   @override
