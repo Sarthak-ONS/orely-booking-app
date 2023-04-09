@@ -112,7 +112,31 @@ class _SignupScreenState extends State<SignupScreen> {
                   if (_emailController!.text.isEmpty ||
                       _passwordController!.text.isEmpty ||
                       _confirmPasswordController!.text.isEmpty ||
-                      _nameController!.text.isEmpty) return;
+                      _nameController!.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        behavior: SnackBarBehavior.floating,
+                        content: Text(
+                          'Please enter valid details.',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
+                  if (_passwordController!.text !=
+                      _confirmPasswordController!.text) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        behavior: SnackBarBehavior.floating,
+                        content: Text(
+                          'Passwords do not match!',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
                   FirebaseAuthApi().signUpWithEmailAndPassword(
                     context,
                     name: _nameController!.text,

@@ -1,5 +1,6 @@
 import 'package:bookingapp/Services/firesbase_firestore_api.dart';
 import 'package:bookingapp/appp_colors.dart';
+import 'package:bookingapp/helper_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -10,6 +11,7 @@ class FirebaseAuthApi {
 
   Future signUpWithGoogle(context) async {
     try {
+      displayLoadingDialog(context);
       GoogleSignInAccount? googleSignIn = await _googleSignIn.signIn();
       final GoogleSignInAuthentication? googleSignInAuthentication =
           await googleSignIn?.authentication;
@@ -24,6 +26,7 @@ class FirebaseAuthApi {
         photoUrl: userCredential.user!.photoURL!,
         userId: userCredential.user!.uid,
       );
+      Navigator.pop(context);
       Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
     } catch (e) {
       print(e);
@@ -111,6 +114,7 @@ class FirebaseAuthApi {
     required String password,
   }) async {
     try {
+      displayLoadingDialog(context);
       UserCredential userCredential =
           await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
@@ -119,9 +123,10 @@ class FirebaseAuthApi {
       print(userCredential);
       print("//////////////////////");
       print(userCredential.user);
-
+      Navigator.pop(context);
       Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
     } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
       print(e);
       if (e.code == "user-not-found") {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -154,18 +159,23 @@ class FirebaseAuthApi {
     required String password,
   }) async {
     try {
+      displayLoadingDialog(context);
       UserCredential userCredential = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
       await userCredential.user!.updateDisplayName(name);
       await FirebaseFirestoreApi().saveUserToDatabase(
         name: name,
         email: email,
-        photoUrl: userCredential.user!.photoURL!,
+        photoUrl: userCredential.user!.photoURL == null
+            ? ""
+            : userCredential.user!.photoURL!,
         userId: userCredential.user!.uid,
       );
       await userCredential.user!.sendEmailVerification();
+      //Navigator.pop(context);
       Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
     } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

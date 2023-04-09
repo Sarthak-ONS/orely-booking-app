@@ -18,16 +18,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          // await RequestHelper().request(endPoint: '/user/sendEmail', bodyMap: {
-          //   "name": "Sarthak Agarwal",
-          //   "formattedDate": "12-4-2023",
-          //   "formattedTime": "12:30-1:00",
-          //   "meetingObjective": "Meeting Presentation"
-          // });
-        },
-      ),
       drawer: Drawer(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -56,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 .instance.currentUser!.photoURL !=
                             null
                         ? FirebaseAuth.instance.currentUser!.photoURL!
-                        : "https://images.pexels.com/photos/2224220/pexels-photo-2224220.jpeg?auto=compress&cs=tinysrgb&w=600"),
+                        : "https://user-images.githubusercontent.com/57105611/230795393-632d6d74-f808-4d16-a5af-1c021699899d.png"),
                   ),
                   decoration: const BoxDecoration(color: AppColors.primayColor),
                 ),
@@ -74,11 +64,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.pushNamed(context, '/pastBookingScreen');
                   },
                 ),
-                ListTile(
-                  title: const Text('Settings'),
-                  trailing: const Icon(Icons.settings),
-                  onTap: () {},
-                ),
+                // ListTile(
+                //   title: const Text('Settings'),
+                //   trailing: const Icon(Icons.settings),
+                //   onTap: () {},
+                // ),
                 ListTile(
                   title: const Text('Signout'),
                   onTap: () {
@@ -116,6 +106,21 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
+        actions: [
+          CircleAvatar(
+            radius: 18,
+            child: ClipOval(
+              child: Image.network(FirebaseAuth
+                          .instance.currentUser!.photoURL !=
+                      null
+                  ? FirebaseAuth.instance.currentUser!.photoURL!
+                  : "https://user-images.githubusercontent.com/57105611/230795393-632d6d74-f808-4d16-a5af-1c021699899d.png"),
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+        ],
       ),
       body: FutureBuilder(
         future: FirebaseFirestore.instance.collection('MeetingRooms').get(),

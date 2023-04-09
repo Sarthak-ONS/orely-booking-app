@@ -323,7 +323,7 @@ class _ActiveBookingScreenState extends State<ActiveBookingScreen> {
                           showModalBottomSheet(
                             backgroundColor: Colors.transparent,
                             context: context,
-                            builder: (context) => Container(
+                            builder: (_) => Container(
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(15.0),
@@ -349,6 +349,8 @@ class _ActiveBookingScreenState extends State<ActiveBookingScreen> {
                                   TextButton(
                                     onPressed: () async {
                                       try {
+                                        Navigator.pop(context);
+                                        displayLoadingDialog(context);
                                         await FirebaseFirestoreApi()
                                             .deleteBookingFromBookings(
                                           startTime: startTime,
@@ -358,6 +360,23 @@ class _ActiveBookingScreenState extends State<ActiveBookingScreen> {
                                           formattedDate: allBookings[index]
                                               ['formatted_date'],
                                         );
+                                        await FirebaseFirestoreApi()
+                                            .sendEmailBookingConfirmtaion(
+                                                FirebaseAuth.instance
+                                                    .currentUser!.displayName!,
+                                                DateFormat('yyyy-MM-dd').format(
+                                                    convertToFornattedDateTime(
+                                                        allBookings[index]
+                                                            ['formatted_date'],
+                                                        0,
+                                                        0)),
+                                                formattedStarttime +
+                                                    "-" +
+                                                    formattedEndtime,
+                                                "${allBookings[index]['meeting_objective']}",
+                                                FirebaseAuth.instance
+                                                    .currentUser!.email!,
+                                                true);
                                         allBookings.removeAt(index);
                                         await FirebaseFirestore.instance
                                             .collection('Users')
@@ -366,7 +385,6 @@ class _ActiveBookingScreenState extends State<ActiveBookingScreen> {
                                             .update({
                                           "bookings": allBookings,
                                         });
-
                                         Navigator.pop(context);
                                         setState(() {});
                                       } catch (e) {
@@ -437,6 +455,7 @@ class LockUnlockButton extends StatelessWidget {
                 int.parse(endTime.substring(0, 2)),
                 int.parse(endTime.substring(2, 4)))) <
             0);
+    // lockunlockCondition = true;
     return ElevatedButton.icon(
       icon: buttonText == 'Lock'
           ? const Icon(Icons.lock)

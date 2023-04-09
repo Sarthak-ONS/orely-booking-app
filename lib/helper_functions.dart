@@ -1,3 +1,6 @@
+import 'package:bookingapp/appp_colors.dart';
+import 'package:flutter/material.dart';
+
 DateTime convertToFornattedDateTime(
     String formattedDateTime, int? hour, int? minute) {
   int year = int.parse(formattedDateTime.substring(
@@ -11,4 +14,23 @@ DateTime convertToFornattedDateTime(
   int day = int.parse(formattedDateTime);
   DateTime fd = DateTime(year, month, day, hour ?? 0, minute ?? 0);
   return fd;
+}
+
+displayLoadingDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => AlertDialog(
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          Center(
+            child: CircularProgressIndicator(
+              color: AppColors.primayColor,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }

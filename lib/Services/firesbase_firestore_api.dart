@@ -9,14 +9,21 @@ import '../helper_functions.dart';
 class FirebaseFirestoreApi {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
-  Future sendEmailBookingConfirmtaion(String name, String formattedDate,
-      String formattedTime, String meetingObjective) async {
+  Future sendEmailBookingConfirmtaion(
+      String name,
+      String formattedDate,
+      String formattedTime,
+      String meetingObjective,
+      String userEmail,
+      bool isDelete) async {
     try {
       await RequestHelper().request(endPoint: '/user/sendEmail', bodyMap: {
         "name": name,
         "formattedDate": formattedDate,
         "formattedTime": formattedTime,
-        "meetingObjective": meetingObjective
+        "meetingObjective": meetingObjective,
+        "userEmail": userEmail,
+        "isDelete": isDelete
       });
     } catch (e) {
       print(e);
@@ -151,7 +158,9 @@ class FirebaseFirestoreApi {
               endTime.substring(0, 2) +
               ":" +
               endTime.substring(2, 4),
-          meetingObjective);
+          meetingObjective,
+          FirebaseAuth.instance.currentUser!.email!,
+          false);
     } catch (e) {
       print(e);
     }
@@ -168,6 +177,7 @@ class FirebaseFirestoreApi {
       final DocumentSnapshot snapshot =
           await _firebaseFirestore.collection('Users').doc(userId).get();
       if (snapshot.exists) {
+        print("Document Exists");
       } else {
         _firebaseFirestore.collection('Users').doc(userId).set({
           "name": name,
