@@ -286,6 +286,8 @@ class _ActiveBookingScreenState extends State<ActiveBookingScreen> {
                                         endTime: endTime,
                                         index: index,
                                         buttonText: 'Lock',
+                                        meetingObjective:
+                                            "${allBookings[index]['meeting_objective']}",
                                       ),
                                       const SizedBox(
                                         width: 5,
@@ -296,6 +298,8 @@ class _ActiveBookingScreenState extends State<ActiveBookingScreen> {
                                         endTime: endTime,
                                         index: index,
                                         buttonText: 'Unlock',
+                                        meetingObjective:
+                                            "${allBookings[index]['meeting_objective']}",
                                       ),
                                     ],
                                   )
@@ -435,12 +439,14 @@ class LockUnlockButton extends StatelessWidget {
     required this.startTime,
     required this.endTime,
     required this.buttonText,
+    required this.meetingObjective,
   }) : super(key: key);
   final int index;
   final List allBookings;
   final String startTime;
   final String endTime;
   final String buttonText;
+  final String meetingObjective;
 
   @override
   Widget build(BuildContext context) {
@@ -455,7 +461,7 @@ class LockUnlockButton extends StatelessWidget {
                 int.parse(endTime.substring(0, 2)),
                 int.parse(endTime.substring(2, 4)))) <
             0);
-    // lockunlockCondition = true;
+    //lockunlockCondition = true;
     return ElevatedButton.icon(
       icon: buttonText == 'Lock'
           ? const Icon(Icons.lock)
@@ -477,9 +483,20 @@ class LockUnlockButton extends StatelessWidget {
       onPressed: () async {
         if (lockunlockCondition) {
           final body = await RequestHelper().request(
-              endPoint:
-                  buttonText == 'Lock' ? '/user/lockDoor' : '/user/unlockDoor',
-              bodyMap: {});
+            endPoint:
+                buttonText == 'Lock' ? '/user/lockDoor' : '/user/unlockDoor',
+            bodyMap: {
+              "user_id": "fsdsadfei2378boifbwuef",
+              "meeting_id": "sfsuliblsiub23buiqeq",
+              "door_id": "dasdakdbdiua2387gbffbsj",
+              "unlockedAt": "",
+              "meeting_objective": meetingObjective,
+              "user": {
+                "user_name": FirebaseAuth.instance.currentUser!.displayName,
+                "user_email": FirebaseAuth.instance.currentUser!.email,
+              },
+            },
+          );
           print(body);
         }
       },
