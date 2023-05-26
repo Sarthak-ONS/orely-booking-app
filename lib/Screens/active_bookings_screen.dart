@@ -72,9 +72,19 @@ class _ActiveBookingScreenState extends State<ActiveBookingScreen> {
             itemCount: allBookings.length,
             itemBuilder: (context, index) {
               if (convertToFornattedDateTime(
-                          allBookings[index]['formatted_date'], 0, 0)
-                      .compareTo(DateTime(DateTime.now().year,
-                          DateTime.now().month, DateTime.now().day)) >=
+                          allBookings[index]['formatted_date'],
+                          int.parse(allBookings[index]['end_time']
+                              .toString()
+                              .substring(0, 2)),
+                          int.parse(allBookings[index]['end_time']
+                              .toString()
+                              .substring(2, 4)))
+                      .compareTo(DateTime(
+                          DateTime.now().year,
+                          DateTime.now().month,
+                          DateTime.now().day,
+                          DateTime.now().hour,
+                          DateTime.now().minute)) >=
                   0) {
                 print("Active bookings");
                 String startTime = allBookings[index]['start_time'];
@@ -85,16 +95,7 @@ class _ActiveBookingScreenState extends State<ActiveBookingScreen> {
                 var formattedEndtime = endTime.substring(0, 2) +
                     ":" +
                     endTime.substring(2, endTime.length);
-                print((DateTime.now().compareTo(convertToFornattedDateTime(
-                            allBookings[index]['formatted_date'],
-                            int.parse(startTime.substring(0, 2)),
-                            int.parse(startTime.substring(2, 4)))) <
-                        0) ||
-                    (DateTime.now().compareTo(convertToFornattedDateTime(
-                            allBookings[index]['formatted_date'],
-                            int.parse(endTime.substring(0, 2)),
-                            int.parse(endTime.substring(2, 4)))) >
-                        0));
+
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 4.0),
                   child: ExpansionTile(

@@ -30,18 +30,18 @@ class FirebaseFirestoreApi {
     }
   }
 
-  Future checkAValidBooking(
-    context, {
-    required String meetingRoomName,
-    required String meetingRoomId,
-    required String formattedDate,
-    required String startTime,
-    required String endTime,
-    required String messageStringDate,
-    required String startEndTimeMessageString,
-    required String roomName,
-    required String meetingObjective,
-  }) async {
+  Future checkAValidBooking(context,
+      {required String meetingRoomName,
+      required String meetingRoomId,
+      required String formattedDate,
+      required String startTime,
+      required String endTime,
+      required String messageStringDate,
+      required String startEndTimeMessageString,
+      required String roomName,
+      required String meetingObjective,
+      required bool isRefreshmentNeeded,
+      required String refreshmentNeeded}) async {
     print("checkvalid booking Called");
 
     try {
@@ -101,7 +101,28 @@ class FirebaseFirestoreApi {
         }
       }
 
-      for (var i = int.parse(startTime); i < int.parse(endTime); i += 15) {
+      var stTime = startTime;
+      if (stTime.length == 3) {
+        stTime = '0' + stTime;
+      }
+      if (stTime.endsWith("00") == false ||
+          stTime.endsWith("15") == false ||
+          stTime.endsWith("30") == false ||
+          stTime.endsWith("45") == false) {
+        print(int.parse(stTime.substring(2)));
+        if (int.parse(stTime.substring(2)) < 15) {
+          stTime = stTime.replaceRange(2, null, "00");
+        } else if (int.parse(stTime.substring(2)) < 30) {
+          stTime = stTime.replaceRange(2, null, "15");
+        } else if (int.parse(stTime.substring(2)) < 45) {
+          stTime = stTime.replaceRange(2, null, "30");
+        } else {
+          stTime = stTime.replaceRange(2, null, "45");
+        }
+        print(stTime);
+        print("/////");
+      }
+      for (var i = int.parse(stTime); i < int.parse(endTime); i += 15) {
         if (i % 100 >= 60) {
           i = (i ~/ 100 + 1) * 100;
         }
@@ -141,7 +162,27 @@ class FirebaseFirestoreApi {
             "meeting_room_id": meetingRoomId,
             "start_time": startTime,
             "end_time": endTime,
-            "meeting_id": ''
+            "meeting_id": '',
+            "isRefreshmentNeeded": isRefreshmentNeeded,
+            "meeting_requirements": refreshmentNeeded
+          }
+        ]),
+      });
+
+      await _firebaseFirestore
+          .collection('MeetingRooms')
+          .doc(meetingRoomId)
+          .update({
+        "bookings": FieldValue.arrayUnion([
+          {
+            "meeting_objective": meetingObjective,
+            "user_id": FirebaseAuth.instance.currentUser!.uid,
+            "formatted_date": formattedDate,
+            "start_time": startTime,
+            "end_time": endTime,
+            "meeting_id": '',
+            "isRefreshmentNeeded": isRefreshmentNeeded,
+            "meeting_requirements": refreshmentNeeded,
           }
         ]),
       });
@@ -185,6 +226,7 @@ class FirebaseFirestoreApi {
           "photoUrl": photoUrl,
           "user_id": userId,
           "phoneNo": phoneNo ?? "",
+          "isAdmin": false,
           "bookings": []
         });
       }

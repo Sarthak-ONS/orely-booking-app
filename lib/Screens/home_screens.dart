@@ -14,6 +14,24 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  bool isAdmin = false;
+
+  checkAdmin() async {
+    DocumentSnapshot user = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+
+    isAdmin = await user.get('isAdmin');
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    checkAdmin();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,11 +82,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.pushNamed(context, '/pastBookingScreen');
                   },
                 ),
-                // ListTile(
-                //   title: const Text('Settings'),
-                //   trailing: const Icon(Icons.settings),
-                //   onTap: () {},
-                // ),
+                isAdmin
+                    ? ListTile(
+                        title: const Text('Admin'),
+                        trailing: const Icon(Icons.admin_panel_settings),
+                        onTap: () {
+                          Navigator.pushNamed(context, '/admin');
+                        },
+                      )
+                    : Container(),
                 ListTile(
                   title: const Text('Signout'),
                   onTap: () {
@@ -191,6 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           ElevatedButton(
                             onPressed: () {
+                              print(snapshot.data.docs[index]['room_id']);
                               Navigator.pushNamed(
                                 context,
                                 '/roomDes',

@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 
 class CustomTextFormField extends StatelessWidget {
-  const CustomTextFormField({
-    Key? key,
-    required TextEditingController? emailController,
-    this.isPasswordField = false,
-    this.hintText = 'someone@example.com',
-  })  : _emailController = emailController,
+  const CustomTextFormField(
+      {Key? key,
+      required TextEditingController? emailController,
+      this.isPasswordField = false,
+      this.hintText = 'someone@example.com',
+      this.maxLines = 1})
+      : _emailController = emailController,
         super(key: key);
 
   final TextEditingController? _emailController;
   final bool isPasswordField;
   final String hintText;
+  final int maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +23,7 @@ class CustomTextFormField extends StatelessWidget {
       child: TextFormField(
         obscureText: isPasswordField,
         style: const TextStyle(fontSize: 16),
+        maxLines: maxLines,
         controller: _emailController,
         decoration: InputDecoration(
           hintText: hintText,

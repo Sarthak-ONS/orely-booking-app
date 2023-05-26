@@ -1,4 +1,5 @@
 import 'package:bookingapp/Screens/active_bookings_screen.dart';
+import 'package:bookingapp/Screens/admin.dart';
 import 'package:bookingapp/Screens/booking_confirmation_screen.dart';
 import 'package:bookingapp/Screens/forgot_password_screen.dart';
 import 'package:bookingapp/Screens/home_screens.dart';
@@ -26,6 +27,8 @@ class RouteGenerator {
         return getMaterialPageRoute(const HomeScreen());
       case '/bookingConfirmation':
         return getMaterialPageRoute(const BookingConfirmationScreen());
+      case '/admin':
+        return getMaterialPageRoute(const AdminBookingsScreen());
       case '/roomDes':
         Map ar = routeSettings.arguments as Map;
         return getMaterialPageRoute(

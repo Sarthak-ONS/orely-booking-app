@@ -12,7 +12,8 @@ class PastBookingScreen extends StatefulWidget {
 }
 
 class _PastBookingScreenState extends State<PastBookingScreen> {
-  DateTime convertToFornattedDateTime(String formattedDateTime) {
+  DateTime convertToFornattedDateTime(
+      String formattedDateTime, int? hour, int? minute) {
     int year = int.parse(formattedDateTime.substring(
         formattedDateTime.length - 4, formattedDateTime.length));
     formattedDateTime = formattedDateTime.replaceRange(
@@ -22,7 +23,7 @@ class _PastBookingScreenState extends State<PastBookingScreen> {
     formattedDateTime = formattedDateTime.replaceRange(
         formattedDateTime.length - 1, formattedDateTime.length, "");
     int day = int.parse(formattedDateTime);
-    DateTime fd = DateTime(year, month, day);
+    DateTime fd = DateTime(year, month, day, hour ?? 0, minute ?? 0);
     return fd;
   }
 
@@ -64,9 +65,19 @@ class _PastBookingScreenState extends State<PastBookingScreen> {
             itemCount: allBookings.length,
             itemBuilder: (context, index) {
               if (convertToFornattedDateTime(
-                          allBookings[index]['formatted_date'])
-                      .compareTo(DateTime(DateTime.now().year,
-                          DateTime.now().month, DateTime.now().day)) <
+                          allBookings[index]['formatted_date'],
+                          int.parse(allBookings[index]['end_time']
+                              .toString()
+                              .substring(0, 2)),
+                          int.parse(allBookings[index]['end_time']
+                              .toString()
+                              .substring(2, 4)))
+                      .compareTo(DateTime(
+                          DateTime.now().year,
+                          DateTime.now().month,
+                          DateTime.now().day,
+                          DateTime.now().hour,
+                          DateTime.now().minute)) <
                   0) {
                 print("Active bookings");
                 String startTime = allBookings[index]['start_time'];
@@ -89,7 +100,7 @@ class _PastBookingScreenState extends State<PastBookingScreen> {
                     childrenPadding: const EdgeInsets.symmetric(horizontal: 8),
                     children: [
                       Text(
-                        'Date : ${DateFormat('yyyy-MM-dd').format(convertToFornattedDateTime(allBookings[index]['formatted_date']))}',
+                        'Date : ${DateFormat('yyyy-MM-dd').format(convertToFornattedDateTime(allBookings[index]['formatted_date'], 0, 0))}',
                       ),
                       const SizedBox(
                         height: 15,

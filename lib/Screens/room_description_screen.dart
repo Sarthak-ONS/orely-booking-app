@@ -25,12 +25,17 @@ class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
 
   TextEditingController? _textEditingController;
 
+  TextEditingController? _meetingRequirementTextController;
+
   @override
   void initState() {
     _textEditingController = TextEditingController();
+    _meetingRequirementTextController = TextEditingController();
     print(widget.roomId);
     super.initState();
   }
+
+  bool isRefreshmentNeeded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +56,9 @@ class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
             child: Text("Please try again later"),
           );
         }
+
+        print(snapshot.data!.get("name"));
+
         return Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.transparent,
@@ -62,7 +70,7 @@ class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
               icon: const Icon(Icons.arrow_back, color: Colors.black),
             ),
             title: Text(
-              snapshot.data!.get("name") ?? "Defaultter",
+              snapshot.data!.get("name") ?? "Default",
               style: const TextStyle(color: Colors.black),
             ),
             centerTitle: true,
@@ -289,6 +297,38 @@ class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
                       const SizedBox(
                         height: 30.0,
                       ),
+                      const Text(
+                        'Meeting Requirements',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 15.0,
+                      ),
+                      CustomTextFormField(
+                        emailController: _meetingRequirementTextController,
+                        maxLines: 5,
+                        hintText: 'Meeting Requirements',
+                      ),
+
+                      const SizedBox(
+                        height: 30.0,
+                      ),
+                      Row(
+                        children: [
+                          const Text('Refreshment Needed?'),
+                          Checkbox(
+                              value: isRefreshmentNeeded,
+                              onChanged: (value) {
+                                setState(() {
+                                  isRefreshmentNeeded = value!;
+                                });
+                              }),
+                        ],
+                      ),
                       GestureDetector(
                         onTap: () {
                           if (widget.roomId == null ||
@@ -463,6 +503,9 @@ class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
                             formattedDate: formattedDate,
                             startTime: formattedStartTime,
                             endTime: formattedEndTime,
+                            isRefreshmentNeeded: isRefreshmentNeeded,
+                            refreshmentNeeded:
+                                _meetingRequirementTextController!.text,
                             messageStringDate: DateFormat('EEE, d/M/y')
                                 .format(selectedDateTime!)
                                 .toString(),
@@ -470,6 +513,7 @@ class _RoomDescriptionScreenState extends State<RoomDescriptionScreen> {
                                 startingTime!.format(context).toString() +
                                     endingTime!.format(context).toString(),
                             roomName: snapshot.data!.get("name"));
+                        Navigator.pop(context);
                       },
                       label: const Text(
                         'Book',
